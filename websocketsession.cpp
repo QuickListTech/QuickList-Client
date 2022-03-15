@@ -15,7 +15,7 @@ using namespace boost::posix_time;
 
 
 WebsocketSession::WebsocketSession ( net::io_context& ioc, ssl::context& ctx, string const &host, int port) : ioc_(ioc), ctx_(ctx), host_(host),
-     resolver_ ( net::make_strand ( ioc ) ),  rTimer_(ioc)
+     resolver_ ( ioc  ),  rTimer_(ioc)
 {
      ostringstream os;
      os << port;
@@ -35,7 +35,7 @@ void WebsocketSession::reconnectTimer()
 
 void WebsocketSession::connect ()
 {
-     socket_.reset(new StreamType{ net::make_strand ( ioc_ ), ctx_ } ),
+     socket_.reset(new StreamType{ ioc_ , ctx_ } ),
 
      resolver_.async_resolve ( host_,
                                port_,

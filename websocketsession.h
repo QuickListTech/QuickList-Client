@@ -8,7 +8,6 @@
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/beast/websocket/ssl.hpp>
-#include <boost/asio/strand.hpp>
 #include "namespace.h"
 #include <queue>
 
