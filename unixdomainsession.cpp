@@ -13,9 +13,6 @@ using std::ostringstream;
 
 using namespace boost::posix_time;
 
-
-extern void fail ( boost::system::error_code, char const* );
-
 UnixDomainSession::UnixDomainSession ( net::io_context& ioc, QuicklistClient *p )
      : socket_ ( ioc ), client_ ( p ), outQueueTimer_ ( ioc )
 {

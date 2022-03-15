@@ -11,15 +11,7 @@ using std::string;
 using std::shared_ptr;
 using std::ostringstream;
 
-extern boost::json::value config;
-
 using namespace boost::posix_time;
-
-// Report a failure
-void fail ( beast::error_code ec, char const* what )
-{
-     std::cerr << what << ": " << ec.message() << "\n";
-}
 
 
 WebsocketSession::WebsocketSession ( net::io_context& ioc, ssl::context& ctx, string const &host, int port) : ioc_(ioc), ctx_(ctx), host_(host),

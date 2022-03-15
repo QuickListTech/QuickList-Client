@@ -14,4 +14,6 @@ using tcp = boost::asio::ip::tcp;
 
 extern json::value config;
 
+void fail ( beast::error_code ec, char const* what );
+
 #endif

@@ -25,6 +25,8 @@ file (GLOB APP_FILES
     unixdomainsession.h
     quicklistclient.cpp
     quicklistclient.h
+    namespace.cpp
+    namespace.h
 )
 
 source_group ("" FILES ${APP_FILES})
