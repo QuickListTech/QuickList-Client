@@ -21,9 +21,7 @@ UnixDomainSession::UnixDomainSession ( net::io_context& ioc, QuicklistClient *p 
 
 void UnixDomainSession::run()
 {
-     auto ws = client_->createWebsocketSession(weak_from_this());
-     ws_ = ws;
-     client_->mapping_.insert(std::make_pair(this, ws.get()));
+     ws_ = client_->createWebsocketSession(weak_from_this());
 
      socket_.async_read_some ( boost::asio::buffer ( data_ ),
                                std::bind ( &UnixDomainSession::onRead, shared_from_this(),_1, _2 ) );
@@ -141,5 +139,9 @@ void UnixDomainSession::outQueueTimer()
 UnixDomainSession::~UnixDomainSession()
 {
      outQueueTimer_.cancel();
+
+     if (auto sp = ws_.lock()) {
+          sp->close();
+     }
 }
 

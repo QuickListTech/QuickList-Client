@@ -28,7 +28,7 @@ public:
     QuicklistClient();
 
     void run();
-    std::shared_ptr<WebsocketSession> createWebsocketSession(std::weak_ptr<UnixDomainSession> uds);
+    std::weak_ptr<WebsocketSession> createWebsocketSession(std::weak_ptr<UnixDomainSession> uds);
 private:
     std::mutex mtx_;
     std::unique_ptr<std::thread> serverT_;
@@ -44,7 +44,6 @@ private:
     std::string qlKey_;
     bool enableQueue_;
     ssl::context ctx_;
-    std::unordered_map<UnixDomainSession*, WebsocketSession*> mapping_;
 };
 
 #endif // QUICKLISTCLIENT_H

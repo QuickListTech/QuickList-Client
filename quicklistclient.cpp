@@ -59,11 +59,11 @@ void QuicklistClient::run()
 
 }
 
-std::shared_ptr<WebsocketSession>
+std::weak_ptr<WebsocketSession>
 QuicklistClient::createWebsocketSession(std::weak_ptr<UnixDomainSession> uds)
 {
      auto socket = std::make_shared<WebsocketSession>(clientIOC_, ctx_, this, uds);
      socket->connect();
 
-     return socket;
+     return socket->weak_from_this();
 }

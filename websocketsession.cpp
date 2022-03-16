@@ -18,7 +18,6 @@ using namespace boost::posix_time;
 WebsocketSession::WebsocketSession ( net::io_context& ioc, ssl::context& ctx, QuicklistClient *cp, std::weak_ptr<UnixDomainSession> uds) :
 ioc_(ioc), ctx_(ctx), resolver_ ( ioc ),  rTimer_(ioc), client_(cp), uds_(uds)
 {
-     socket_.reset(new StreamType{ ioc_ , ctx_ });
 }
 
 void WebsocketSession::reconnectTimer()
@@ -29,11 +28,12 @@ void WebsocketSession::reconnectTimer()
 
 void WebsocketSession::connect ()
 {
-     buffer_.clear();
-
      if (uds_.expired()) {
           return;
      }
+
+     socket_.reset(new StreamType{ ioc_ , ctx_ });
+     buffer_.clear();
 
      resolver_.async_resolve ( client_->qlHost_,
                                client_->qlPort_,
@@ -157,7 +157,14 @@ void WebsocketSession::onSend ( shared_ptr<const string> msg)
                             beast::bind_front_handler ( &WebsocketSession::onWrite, shared_from_this()) );
 }
 
+void WebsocketSession::close()
+{
+     if (socket_->is_open()) {
+          socket_->close(beast::websocket::close_reason());
+     }
+}
+
 WebsocketSession::~WebsocketSession()
 {
-     //socket_.reset(new StreamType{ ioc_ , ctx_ } );
+
 }

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 <copyright holder> <email>
+    // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: Apache-2.0
 
 #ifndef WEBSOCKETSESSION_H
@@ -27,6 +27,7 @@ public:
     void connect ();
     void send(std::shared_ptr<const std::string> msg);
     bool isOpen() const { return socket_->is_open(); }
+    void close();
 private:
     void onResolve ( beast::error_code ec, tcp::resolver::results_type results );
     void onConnect ( beast::error_code ec, tcp::resolver::results_type::endpoint_type );
