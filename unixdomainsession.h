@@ -11,6 +11,7 @@
 #include "namespace.h"
 
 class QuicklistClient;
+class WebsocketSession;
 
 /**
  * @todo write docs
@@ -18,7 +19,7 @@ class QuicklistClient;
 class UnixDomainSession : public std::enable_shared_from_this<UnixDomainSession>
 {
 public:
-    UnixDomainSession ( net::io_context& io_context, QuicklistClient *p);
+    UnixDomainSession ( net::io_context& ioc, QuicklistClient *p);
     ~UnixDomainSession();
 
     net::local::stream_protocol::socket& socket()
@@ -40,6 +41,7 @@ private:
   SingleBuffer data_;
   std::vector<SingleBuffer> buffers_;
   net::deadline_timer outQueueTimer_;
+  std::weak_ptr<WebsocketSession> ws_;
 
   void onReceive(std::string const &msg);
   void fallback(std::string const &msg);

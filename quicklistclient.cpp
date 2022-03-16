@@ -5,63 +5,65 @@
 #include "websocketsession.h"
 #include "unixdomainserver.h"
 #include <iostream>
+#include <sstream>
 
-QuicklistClient::QuicklistClient()
+using std::ostringstream;
+
+QuicklistClient::QuicklistClient() : ctx_ ( ssl::context::tlsv12_client )
 {
-    qlHost_ = config.as_object()["client"].as_object()["host"].as_string().c_str();
-    qlPort_ = config.as_object()["client"].as_object()["port"].as_int64();
-    qlReconnect_ = config.as_object()["client"].as_object()["reconnect"].as_int64();
-    qlCert_ = config.as_object()["client"].as_object()["certificate"].as_string().c_str();
-    qlKey_ = config.as_object()["client"].as_object()["privatekey"].as_string().c_str();
-    udsFile_ = config.as_object()["UDS"].as_object()["file"].as_string().c_str();
-    enableQueue_ = config.as_object()["UDS"].as_object()["queue"].as_bool();
+     qlHost_ = config.as_object() ["client"].as_object() ["host"].as_string().c_str();
+     ostringstream os;
+     os <<  config.as_object() ["client"].as_object() ["port"].as_int64();
+     qlPort_ = os.str();
+     qlReconnect_ = config.as_object() ["client"].as_object() ["reconnect"].as_int64();
+     qlCert_ = config.as_object() ["client"].as_object() ["certificate"].as_string().c_str();
+     qlKey_ = config.as_object() ["client"].as_object() ["privatekey"].as_string().c_str();
+     udsFile_ = config.as_object() ["UDS"].as_object() ["file"].as_string().c_str();
+     enableQueue_ = config.as_object() ["UDS"].as_object() ["queue"].as_bool();
+
+     ctx_.use_certificate_file ( qlCert_, ssl::context::file_format::pem );
+     ctx_.use_private_key_file ( qlKey_, ssl::context::file_format::pem );
+
+     // This holds the root certificate used for verification
+     ctx_.set_verify_mode ( ssl::verify_peer | ssl::verify_fail_if_no_peer_cert );
+     ctx_.add_verify_path ( "/etc/ssl/certs" );
 }
 
 void QuicklistClient::run()
 {
-     clientT_.reset( new std::thread ( [&] {
-          net::io_context ioc;
-          net::signal_set signals ( ioc, SIGINT, SIGTERM );
-          signals.async_wait ( [&ioc] ( boost::system::error_code const&, int )
+     clientT_.reset ( new std::thread ( [&] {
+          net::signal_set signals ( clientIOC_, SIGINT, SIGTERM );
+          signals.async_wait ( [&] ( boost::system::error_code const&, int )
           {
-               ioc.stop();
+               clientIOC_.stop();
           } );
 
-          ssl::context ctx{ssl::context::tlsv12_client};
-
-          ctx.use_certificate_file ( qlCert_, ssl::context::file_format::pem );
-          ctx.use_private_key_file ( qlKey_, ssl::context::file_format::pem );
-
-          // This holds the root certificate used for verification
-          ctx.set_verify_mode ( ssl::verify_peer | ssl::verify_fail_if_no_peer_cert );
-          ctx.add_verify_path ( "/etc/ssl/certs" );
-
-          std::shared_ptr<WebsocketSession> ws = std::make_shared<WebsocketSession> ( ioc, ctx, qlHost_, qlPort_);
-          ws->connect ( );
-
-          {
-               std::lock_guard<std::mutex> lock ( mtx_ );
-               websocket_ = ws->weak_from_this();
-          }
-
-          ioc.run();
+          clientIOC_.run();
      } ) );
 
-     serverT_.reset( new std::thread  ( [&] {
-          net::io_context ioc;
-          net::signal_set signals ( ioc, SIGINT, SIGTERM );
-          signals.async_wait ( [&ioc] ( boost::system::error_code const&, int )
+     serverT_.reset ( new std::thread ( [&] {
+          net::signal_set signals ( serverIOC_, SIGINT, SIGTERM );
+          signals.async_wait ( [&] ( boost::system::error_code const&, int )
           {
-               ioc.stop();
+               serverIOC_.stop();
           } );
 
-          UnixDomainServer serv ( ioc, udsFile_, this);
+          UnixDomainServer serv ( serverIOC_, udsFile_, this );
 
-          ioc.run();
+          serverIOC_.run();
      } ) );
 
 
      clientT_->join();
      serverT_->join();
 
+}
+
+std::shared_ptr<WebsocketSession>
+QuicklistClient::createWebsocketSession(std::weak_ptr<UnixDomainSession> uds)
+{
+     auto socket = std::make_shared<WebsocketSession>(clientIOC_, ctx_, this, uds);
+     socket->connect();
+
+     return socket;
 }

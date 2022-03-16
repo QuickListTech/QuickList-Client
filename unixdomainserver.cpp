@@ -9,10 +9,10 @@ using std::string;
 using std::shared_ptr;
 using namespace std::placeholders;
 
-UnixDomainServer::UnixDomainServer ( net::io_context& io_context, string const & file, QuicklistClient *p )
-     : io_context_ ( io_context ), acceptor_ ( io_context, net::local::stream_protocol::endpoint ( file ) ), file_ ( file ), client_ ( p )
+UnixDomainServer::UnixDomainServer ( net::io_context& ioc, string const & file, QuicklistClient *p )
+     : ioc_ ( ioc ), acceptor_ ( ioc, net::local::stream_protocol::endpoint ( file ) ), file_ ( file ), client_ ( p )
 {
-     Session sp ( new UnixDomainSession ( io_context_, client_ ) );
+     Session sp ( new UnixDomainSession ( ioc_, client_ ) );
      acceptor_.async_accept ( sp->socket(),
                               std::bind ( &UnixDomainServer::onAccept, this, sp, _1 ) );
 }
@@ -25,7 +25,7 @@ void UnixDomainServer::onAccept ( Session sp, boost::system::error_code const & 
           std::cerr << "UDServer/onAccept: " << error.what() << std::endl;
           return;
      }
-     sp.reset ( new UnixDomainSession ( io_context_, client_ ) );
+     sp.reset ( new UnixDomainSession ( ioc_, client_ ) );
      acceptor_.async_accept ( sp->socket(),
                               std::bind ( &UnixDomainServer::onAccept, this, sp, _1 ) );
 }

@@ -21,6 +21,10 @@ UnixDomainSession::UnixDomainSession ( net::io_context& ioc, QuicklistClient *p 
 
 void UnixDomainSession::run()
 {
+     auto ws = client_->createWebsocketSession(weak_from_this());
+     ws_ = ws;
+     client_->mapping_.insert(std::make_pair(this, ws.get()));
+
      socket_.async_read_some ( boost::asio::buffer ( data_ ),
                                std::bind ( &UnixDomainSession::onRead, shared_from_this(),_1, _2 ) );
 }
@@ -46,7 +50,7 @@ void UnixDomainSession::onRead ( const boost::system::error_code& error, size_t 
           string pl ( payload.str() );
           data_ = {};
 
-          auto sp = client_->websocket_.lock();
+          auto sp = ws_.lock();
 
           if ( pl == "STATUS" ) {
                if ( sp && sp->isOpen() ) {
@@ -56,7 +60,7 @@ void UnixDomainSession::onRead ( const boost::system::error_code& error, size_t 
                }
           } else {
                if ( sp  && sp->isOpen() ) {
-                    sp->send ( std::make_shared<string> ( pl ), weak_from_this() );
+                    sp->send ( std::make_shared<string> ( pl ) );
                } else {
                     fallback ( pl );
                }
@@ -120,10 +124,10 @@ void UnixDomainSession::outQueueTimer()
           }
 
           if ( outQueue_.size() > 0 ) {
-               if ( auto sp = client_->websocket_.lock() ) {
+               if ( auto sp = ws_.lock() ) {
                     if ( sp->isOpen() ) {
                          while ( !outQueue_.empty() ) {
-                              sp->send ( std::make_shared<string> ( outQueue_.front() ), weak_from_this() );
+                              sp->send ( std::make_shared<string> ( outQueue_.front() ) );
                               outQueue_.pop();
                          }
                     }

@@ -22,7 +22,7 @@ def readInput():
     print("Type message:")
 
     for line in sys.stdin:
-        out = line.strip().encode()
+        out = '{"Event" : "SubscribeStream", "ReqID" : 1}'.strip().encode()
         print('sending {!r}'.format(out))
         sock.sendall(out)
 try:

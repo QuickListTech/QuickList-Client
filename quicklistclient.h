@@ -5,8 +5,11 @@
 #define QUICKLISTCLIENT_H
 
 #include <thread>
-#include <mutex>
 #include <memory>
+#include <unordered_map>
+#include <boost/beast/ssl.hpp>
+#include <boost/beast/websocket.hpp>
+#include <boost/beast/websocket/ssl.hpp>
 
 #include "namespace.h"
 
@@ -25,20 +28,23 @@ public:
     QuicklistClient();
 
     void run();
+    std::shared_ptr<WebsocketSession> createWebsocketSession(std::weak_ptr<UnixDomainSession> uds);
 private:
     std::mutex mtx_;
     std::unique_ptr<std::thread> serverT_;
     std::unique_ptr<std::thread> clientT_;
+    net::io_context serverIOC_;
+    net::io_context clientIOC_;
 
     std::string qlHost_;
-    int qlPort_;
+    std::string qlPort_;
     int qlReconnect_;
     std::string udsFile_;
     std::string qlCert_;
     std::string qlKey_;
     bool enableQueue_;
-
-    std::weak_ptr<WebsocketSession> websocket_;
+    ssl::context ctx_;
+    std::unordered_map<UnixDomainSession*, WebsocketSession*> mapping_;
 };
 
 #endif // QUICKLISTCLIENT_H

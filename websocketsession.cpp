@@ -6,6 +6,7 @@
 
 #include "websocketsession.h"
 #include "unixdomainsession.h"
+#include "quicklistclient.h"
 
 using std::string;
 using std::shared_ptr;
@@ -14,31 +15,28 @@ using std::ostringstream;
 using namespace boost::posix_time;
 
 
-WebsocketSession::WebsocketSession ( net::io_context& ioc, ssl::context& ctx, string const &host, int port) : ioc_(ioc), ctx_(ctx), host_(host),
-     resolver_ ( ioc  ),  rTimer_(ioc)
+WebsocketSession::WebsocketSession ( net::io_context& ioc, ssl::context& ctx, QuicklistClient *cp, std::weak_ptr<UnixDomainSession> uds) :
+ioc_(ioc), ctx_(ctx), resolver_ ( ioc ),  rTimer_(ioc), client_(cp), uds_(uds)
 {
-     ostringstream os;
-     os << port;
-
-     port_ = os.str();
+     socket_.reset(new StreamType{ ioc_ , ctx_ });
 }
 
 void WebsocketSession::reconnectTimer()
 {
      rTimer_.expires_from_now ( seconds ( config.get_object()["client"].get_object()["reconnect"].as_int64() ) );
-     rTimer_.async_wait ( [&] ( boost::system::error_code const &e ) {
-               boost::ignore_unused(e);
-               buffer_.clear();
-               connect();
-     } );
+     rTimer_.async_wait (std::bind ( &WebsocketSession::connect, shared_from_this() ) );
 }
 
 void WebsocketSession::connect ()
 {
-     socket_.reset(new StreamType{ ioc_ , ctx_ } ),
+     buffer_.clear();
 
-     resolver_.async_resolve ( host_,
-                               port_,
+     if (uds_.expired()) {
+          return;
+     }
+
+     resolver_.async_resolve ( client_->qlHost_,
+                               client_->qlPort_,
                                beast::bind_front_handler ( &WebsocketSession::onResolve, shared_from_this() ) );
 }
 
@@ -84,7 +82,7 @@ void WebsocketSession::onSSLHandshake ( beast::error_code ec )
      opt.client_enable = true;
      socket_->set_option ( opt );
 
-     socket_->async_handshake ( host_,
+     socket_->async_handshake ( client_->qlHost_,
                                 "/",
                                 beast::bind_front_handler (&WebsocketSession::onHandshake, shared_from_this() ) );
 }
@@ -96,7 +94,7 @@ void WebsocketSession::onHandshake ( beast::error_code ec )
           return fail ( ec, "WS/onHandshake" );
 
      } else {
-          std::cout << "Connected: " << host_ << ":" << port_ << std::endl;
+          std::cout << "Connected: " << client_->qlHost_ << ":" << client_->qlPort_ << std::endl;
      }
 
      // Read a message
@@ -121,7 +119,7 @@ void WebsocketSession::onWrite ( beast::error_code ec, std::size_t bytes_transfe
      }
 }
 
-void WebsocketSession::onRead (beast::error_code ec, std::size_t bytes_transferred )
+void WebsocketSession::onRead (beast::error_code ec, std::size_t bytes_transferred)
 {
      boost::ignore_unused ( bytes_transferred );
 
@@ -140,16 +138,14 @@ void WebsocketSession::onRead (beast::error_code ec, std::size_t bytes_transferr
                           beast::bind_front_handler ( &WebsocketSession::onRead, shared_from_this() ) );
 }
 
-void WebsocketSession::send(shared_ptr<const string> msg, std::weak_ptr<UnixDomainSession> uds)
+void WebsocketSession::send(shared_ptr<const string> msg)
 {
-     uds_ = std::move(uds);;
-
      if (isOpen()) {
-          net::post ( socket_->get_executor(), beast::bind_front_handler ( &WebsocketSession::onSend, shared_from_this(), msg ) );
+          net::post ( socket_->get_executor(), beast::bind_front_handler ( &WebsocketSession::onSend, shared_from_this(), msg) );
      }
 }
 
-void WebsocketSession::onSend ( shared_ptr<const string> msg )
+void WebsocketSession::onSend ( shared_ptr<const string> msg)
 {
      queue_.push( *msg );
 
@@ -158,10 +154,10 @@ void WebsocketSession::onSend ( shared_ptr<const string> msg )
      }
 
      socket_->async_write ( net::buffer ( queue_.front() ),
-                            beast::bind_front_handler ( &WebsocketSession::onWrite, shared_from_this() ) );
+                            beast::bind_front_handler ( &WebsocketSession::onWrite, shared_from_this()) );
 }
 
 WebsocketSession::~WebsocketSession()
 {
-
+     //socket_.reset(new StreamType{ ioc_ , ctx_ } );
 }
