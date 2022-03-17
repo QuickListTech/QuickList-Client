@@ -160,8 +160,13 @@ void WebsocketSession::onSend ( shared_ptr<const string> msg)
 void WebsocketSession::close()
 {
      if (socket_->is_open()) {
-          socket_->close(beast::websocket::close_reason());
+          socket_->async_close(beast::websocket::close_reason(), beast::bind_front_handler(&WebsocketSession::onClose, shared_from_this() ) );
      }
+}
+
+void WebsocketSession::onClose(beast::error_code ec)
+{
+
 }
 
 WebsocketSession::~WebsocketSession()

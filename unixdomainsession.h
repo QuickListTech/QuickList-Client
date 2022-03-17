@@ -28,8 +28,8 @@ public:
     }
 
     void run();
-    void onRead ( const boost::system::error_code& error, size_t bytes_transferred );
-    void onWrite ( const boost::system::error_code& error );
+    void onRead ( const boost::system::error_code& ec, size_t bytes_transferred );
+    void onWrite ( const boost::system::error_code& ec );
     void receive(std::string const &);
 private:
   net::local::stream_protocol::socket socket_;
@@ -45,7 +45,8 @@ private:
 
   void onReceive(std::string const &msg);
   void fallback(std::string const &msg);
-  void outQueueTimer();
+  void startOutQueueTimer();
+  void onOutQueueTimer(boost::system::error_code const &);
 
 };
 

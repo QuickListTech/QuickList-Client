@@ -4,8 +4,9 @@
 #include "quicklistclient.h"
 #include "websocketsession.h"
 #include "unixdomainserver.h"
-#include <iostream>
-#include <sstream>
+#include "log.h"
+#include <fstream>
+#include <filesystem>
 
 using std::ostringstream;
 
@@ -31,6 +32,11 @@ QuicklistClient::QuicklistClient() : ctx_ ( ssl::context::tlsv12_client )
 
 void QuicklistClient::run()
 {
+     if (std::filesystem::exists(udsFile_)) {
+          logger.warn() << "Removing stale sock file" << std::endl;
+          UnixDomainServer::removeSockFile(udsFile_);
+     }
+
      clientT_.reset ( new std::thread ( [&] {
           net::signal_set signals ( clientIOC_, SIGINT, SIGTERM );
           signals.async_wait ( [&] ( boost::system::error_code const&, int )

@@ -3,6 +3,7 @@
 
 #include "unixdomainserver.h"
 #include "websocketsession.h"
+#include "log.h"
 #include <iostream>
 
 using std::string;
@@ -17,12 +18,12 @@ UnixDomainServer::UnixDomainServer ( net::io_context& ioc, string const & file, 
                               std::bind ( &UnixDomainServer::onAccept, this, sp, _1 ) );
 }
 
-void UnixDomainServer::onAccept ( Session sp, boost::system::error_code const & error )
+void UnixDomainServer::onAccept ( Session sp, boost::system::error_code const & ec )
 {
-     if ( !error ) {
+     if ( !ec ) {
           sp->run();
      } else {
-          std::cerr << "UDServer/onAccept: " << error.what() << std::endl;
+          fail ( ec, "UDServer/onAccept: ");
           return;
      }
      sp.reset ( new UnixDomainSession ( ioc_, client_ ) );
@@ -30,8 +31,13 @@ void UnixDomainServer::onAccept ( Session sp, boost::system::error_code const & 
                               std::bind ( &UnixDomainServer::onAccept, this, sp, _1 ) );
 }
 
+void UnixDomainServer::removeSockFile(string const &file)
+{
+     std::system ( ( string ( "rm " ) + file ).c_str() );
+}
+
 UnixDomainServer::~UnixDomainServer()
 {
-     std::system ( ( string ( "rm " ) + file_ ).c_str() );
+     removeSockFile(file_);
 }
 

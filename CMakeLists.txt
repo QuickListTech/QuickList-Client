@@ -27,6 +27,8 @@ file (GLOB APP_FILES
     quicklistclient.h
     namespace.cpp
     namespace.h
+    log.cpp
+    log.h
 )
 
 source_group ("" FILES ${APP_FILES})

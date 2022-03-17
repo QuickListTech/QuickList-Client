@@ -35,6 +35,7 @@ private:
     void onHandshake ( beast::error_code ec );
     void onWrite ( beast::error_code ec, std::size_t bytes_transferred);
     void onRead ( beast::error_code ec, std::size_t bytes_transferred);
+    void onClose( beast::error_code ec);
     void onSend(std::shared_ptr<const std::string> msg);
     void reconnectTimer();
 

@@ -1,0 +1,20 @@
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: UDSession/onRead: End of file
+ERR: WS/onRead: Operation canceled
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+WARN: SIGNAL(1) received. Reloading QuickList-Client daemon...
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+WARN: Removing stale sock file
+INFO: Starting QuickList-Client daemon.

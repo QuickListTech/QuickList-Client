@@ -4,6 +4,7 @@
 #include "unixdomainsession.h"
 #include "websocketsession.h"
 #include "quicklistclient.h"
+#include "log.h"
 #include <iostream>
 #include <sstream>
 
@@ -16,21 +17,22 @@ using namespace boost::posix_time;
 UnixDomainSession::UnixDomainSession ( net::io_context& ioc, QuicklistClient *p )
      : socket_ ( ioc ), client_ ( p ), outQueueTimer_ ( ioc )
 {
-     outQueueTimer();
 }
 
 void UnixDomainSession::run()
 {
-     ws_ = client_->createWebsocketSession(weak_from_this());
+     startOutQueueTimer();
+     ws_ = client_->createWebsocketSession ( weak_from_this() );
 
      socket_.async_read_some ( boost::asio::buffer ( data_ ),
                                std::bind ( &UnixDomainSession::onRead, shared_from_this(),_1, _2 ) );
 }
 
-void UnixDomainSession::onRead ( const boost::system::error_code& error, size_t bytes_transferred )
+void UnixDomainSession::onRead ( const boost::system::error_code& ec, size_t bytes_transferred )
 {
-     if ( error ) {
-          return fail ( error, "UDSession/onRead" );
+     if ( ec ) {
+          socket_.close();
+          return fail ( ec, "UDSession/onRead" );
      }
 
      if ( bytes_transferred < data_.size() ) {
@@ -72,18 +74,17 @@ void UnixDomainSession::onRead ( const boost::system::error_code& error, size_t 
                                std::bind ( &UnixDomainSession::onRead, shared_from_this(),_1, _2 ) );
 }
 
-void UnixDomainSession::onWrite ( const boost::system::error_code& error )
+void UnixDomainSession::onWrite ( const boost::system::error_code& ec )
 {
-     if ( error ) {
-          return fail ( error, "UDSession/onWrite" );
+     if ( ec ) {
+          socket_.close();
+          return fail ( ec, "UDSession/onWrite" );
      }
 
      inQueue_.pop();
 
-     if ( !error ) {
-          if ( inQueue_.size() > 0 ) {
-               net::async_write ( socket_, net::buffer ( inQueue_.front() ), std::bind ( &UnixDomainSession::onWrite, shared_from_this(), _1 ) );
-          }
+     if ( inQueue_.size() > 0 ) {
+          net::async_write ( socket_, net::buffer ( inQueue_.front() ), std::bind ( &UnixDomainSession::onWrite, shared_from_this(), _1 ) );
      }
 }
 
@@ -113,34 +114,34 @@ void UnixDomainSession::fallback ( string const &msg )
      }
 }
 
-void UnixDomainSession::outQueueTimer()
+void UnixDomainSession::startOutQueueTimer()
 {
      outQueueTimer_.expires_from_now ( seconds ( 5 ) );
-     outQueueTimer_.async_wait ( [&] ( boost::system::error_code const &e ) {
-          if ( e ) {
-               return;
-          }
+     outQueueTimer_.async_wait ( std::bind ( &UnixDomainSession::onOutQueueTimer, shared_from_this(), _1 ) );
+}
 
-          if ( outQueue_.size() > 0 ) {
-               if ( auto sp = ws_.lock() ) {
-                    if ( sp->isOpen() ) {
-                         while ( !outQueue_.empty() ) {
-                              sp->send ( std::make_shared<string> ( outQueue_.front() ) );
-                              outQueue_.pop();
-                         }
+void UnixDomainSession::onOutQueueTimer ( boost::system::error_code const &ec )
+{
+     if ( ec || !socket_.is_open()) {
+          return;
+     }
+
+     if ( outQueue_.size() > 0 ) {
+          if ( auto sp = ws_.lock() ) {
+               if ( sp->isOpen() ) {
+                    while ( !outQueue_.empty() ) {
+                         sp->send ( std::make_shared<string> ( outQueue_.front() ) );
+                         outQueue_.pop();
                     }
                }
           }
+     }
 
-          outQueueTimer();
-     } );
+     startOutQueueTimer();
 }
-
 UnixDomainSession::~UnixDomainSession()
 {
-     outQueueTimer_.cancel();
-
-     if (auto sp = ws_.lock()) {
+     if ( auto sp = ws_.lock() ) {
           sp->close();
      }
 }

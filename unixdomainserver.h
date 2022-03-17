@@ -21,8 +21,8 @@ public:
     UnixDomainServer ( net::io_context& ioc, std::string const & file, QuicklistClient *p );
     ~UnixDomainServer();
 
-    void onAccept ( Session sp, boost::system::error_code const & error );
-
+    void onAccept ( Session sp, boost::system::error_code const & ec );
+    static void removeSockFile(std::string const &file);
 private:
     net::io_context& ioc_;
     net::local::stream_protocol::acceptor acceptor_;
