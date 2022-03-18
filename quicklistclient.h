@@ -6,7 +6,6 @@
 
 #include <thread>
 #include <memory>
-#include <unordered_map>
 #include <boost/beast/ssl.hpp>
 #include <boost/beast/websocket.hpp>
 #include <boost/beast/websocket/ssl.hpp>
@@ -18,19 +17,51 @@ class UnixDomainSession;
 
 
 /**
- * @todo write docs
+ * This class starts 2 threads. One for websocket context and one for unix domain socket context.
+ *
  */
 class QuicklistClient
 {
-    friend WebsocketSession;
-    friend UnixDomainSession;
 public:
     QuicklistClient();
 
+    /*
+     * Start threads
+     */
     void run();
-    std::weak_ptr<WebsocketSession> createWebsocketSession(std::weak_ptr<UnixDomainSession> uds);
+
+    std::string const & remoteHost() const
+    {
+        return qlHost_;
+    }
+    std::string const & remotePort() const
+    {
+        return qlPort_;
+    }
+    std::string const & unixDomainSocketPath() const
+    {
+        return udsFile_;
+    }
+    std::string const &clientCertificatePath() const
+    {
+        return qlCert_;
+    }
+    std::string const &clientPrivateKeyPath() const
+    {
+        return qlKey_;
+    }
+
+    bool isQueueEnabled() const {
+        return queueEnabled_;
+    }
+
+    unsigned int reconnectTime() const {
+        return reconnectTime_;
+    }
+
+    std::weak_ptr<WebsocketSession>
+    createWebsocketSession(std::weak_ptr<UnixDomainSession> uds);
 private:
-    std::mutex mtx_;
     std::unique_ptr<std::thread> serverT_;
     std::unique_ptr<std::thread> clientT_;
     net::io_context serverIOC_;
@@ -42,7 +73,8 @@ private:
     std::string udsFile_;
     std::string qlCert_;
     std::string qlKey_;
-    bool enableQueue_;
+    bool queueEnabled_;
+    unsigned int reconnectTime_;
     ssl::context ctx_;
 };
 

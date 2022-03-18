@@ -15,7 +15,9 @@ class UnixDomainSession;
 class QuicklistClient;
 
 /**
- * @todo write docs
+ * WebsocketSession handles connection to the QuickList server. If socket connection goes down
+ * a timer automatically attempts to reconnect, allowing the WebsocketSession to persist across
+ * reconnects.
  */
 class WebsocketSession : public std::enable_shared_from_this<WebsocketSession>
 {
@@ -24,9 +26,26 @@ public:
     explicit WebsocketSession ( net::io_context& ioc, ssl::context& ctx, QuicklistClient *cp, std::weak_ptr<UnixDomainSession> uds);
     ~WebsocketSession();
 
+    /*
+     * Initial connection
+     */
     void connect ();
+
+    /*
+     * Send message to server
+     */
     void send(std::shared_ptr<const std::string> msg);
-    bool isOpen() const { return socket_->is_open(); }
+
+    /*
+     * Check connection status
+     */
+    bool isOpen() const {
+        return socket_->is_open();
+    }
+
+    /*
+     * Carry out async close of socket
+     */
     void close();
 private:
     void onResolve ( beast::error_code ec, tcp::resolver::results_type results );

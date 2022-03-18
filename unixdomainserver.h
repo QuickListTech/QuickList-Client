@@ -4,26 +4,30 @@
 #ifndef UNIXDOMAINSERVER_H
 #define UNIXDOMAINSERVER_H
 
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
-
-#include "unixdomainsession.h"
+#include "namespace.h"
+#include <boost/asio/local/stream_protocol.hpp>
 
 /**
- * @todo write docs
+ * UnixDomainServer handles new Unix Domain socket connections asynchronously
  */
 class QuicklistClient;
+class UnixDomainSession;
 
 class UnixDomainServer
 {
-    typedef std::shared_ptr<UnixDomainSession>  Session;
+    typedef std::shared_ptr<UnixDomainSession> Session;
 public:
+    /*
+     *  Helper function to remove stale sock file
+     */
+    static void removeSockFile(std::string const &file);
+
     UnixDomainServer ( net::io_context& ioc, std::string const & file, QuicklistClient *p );
     ~UnixDomainServer();
 
-    void onAccept ( Session sp, boost::system::error_code const & ec );
-    static void removeSockFile(std::string const &file);
 private:
+    void onAccept ( Session sp, boost::system::error_code const & ec );
+
     net::io_context& ioc_;
     net::local::stream_protocol::acceptor acceptor_;
     std::string file_;

@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: Apache-2.0
 
-#include <iostream>
 #include <boost/json.hpp>
 
 #include "websocketsession.h"
 #include "unixdomainsession.h"
 #include "quicklistclient.h"
+#include "log.h"
 
 using std::string;
 using std::shared_ptr;
@@ -22,7 +22,7 @@ ioc_(ioc), ctx_(ctx), resolver_ ( ioc ),  rTimer_(ioc), client_(cp), uds_(uds)
 
 void WebsocketSession::reconnectTimer()
 {
-     rTimer_.expires_from_now ( seconds ( config.get_object()["client"].get_object()["reconnect"].as_int64() ) );
+     rTimer_.expires_from_now ( seconds ( client_->reconnectTime() ) );
      rTimer_.async_wait (std::bind ( &WebsocketSession::connect, shared_from_this() ) );
 }
 
@@ -35,8 +35,8 @@ void WebsocketSession::connect ()
      socket_.reset(new StreamType{ ioc_ , ctx_ });
      buffer_.clear();
 
-     resolver_.async_resolve ( client_->qlHost_,
-                               client_->qlPort_,
+     resolver_.async_resolve ( client_->remoteHost(),
+                               client_->remotePort(),
                                beast::bind_front_handler ( &WebsocketSession::onResolve, shared_from_this() ) );
 }
 
@@ -82,7 +82,7 @@ void WebsocketSession::onSSLHandshake ( beast::error_code ec )
      opt.client_enable = true;
      socket_->set_option ( opt );
 
-     socket_->async_handshake ( client_->qlHost_,
+     socket_->async_handshake ( client_->remoteHost(),
                                 "/",
                                 beast::bind_front_handler (&WebsocketSession::onHandshake, shared_from_this() ) );
 }
@@ -94,7 +94,7 @@ void WebsocketSession::onHandshake ( beast::error_code ec )
           return fail ( ec, "WS/onHandshake" );
 
      } else {
-          std::cout << "Connected: " << client_->qlHost_ << ":" << client_->qlPort_ << std::endl;
+          logger.info() << "QuickList server connected: " << client_->remoteHost() << ":" << client_->remotePort() << std::endl;
      }
 
      // Read a message
@@ -166,7 +166,11 @@ void WebsocketSession::close()
 
 void WebsocketSession::onClose(beast::error_code ec)
 {
+     if (ec) {
+          return fail ( ec, "WS/onClose" );
+     }
 
+     logger.info() << "QuickList server connection closed" << std::endl;
 }
 
 WebsocketSession::~WebsocketSession()

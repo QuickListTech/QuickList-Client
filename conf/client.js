@@ -1,5 +1,5 @@
 {
-    "client" : {
+    "remote" : {
         "host" : "192.168.1.242",
         "port" : 8080,
         "privatekey" : "tls/clientB.key.pem",
@@ -7,7 +7,7 @@
     },
 
     "UDS": {
-        "daemonize" : true,
+        "daemonize" : false,
         "rundir" : "./",
         "pidfile" : "quicklist.pid",
         "user" : "petr",

@@ -7,20 +7,22 @@
 #include "log.h"
 #include <fstream>
 #include <filesystem>
+#include <boost/asio/signal_set.hpp>
 
 using std::ostringstream;
 
 QuicklistClient::QuicklistClient() : ctx_ ( ssl::context::tlsv12_client )
 {
-     qlHost_ = config.as_object() ["client"].as_object() ["host"].as_string().c_str();
+     qlHost_ = config.as_object() ["remote"].as_object() ["host"].as_string().c_str();
      ostringstream os;
-     os <<  config.as_object() ["client"].as_object() ["port"].as_int64();
+     os <<  config.as_object() ["remote"].as_object() ["port"].as_int64();
      qlPort_ = os.str();
-     qlReconnect_ = config.as_object() ["client"].as_object() ["reconnect"].as_int64();
-     qlCert_ = config.as_object() ["client"].as_object() ["certificate"].as_string().c_str();
-     qlKey_ = config.as_object() ["client"].as_object() ["privatekey"].as_string().c_str();
+     qlReconnect_ = config.as_object() ["remote"].as_object() ["reconnect"].as_int64();
+     qlCert_ = config.as_object() ["remote"].as_object() ["certificate"].as_string().c_str();
+     qlKey_ = config.as_object() ["remote"].as_object() ["privatekey"].as_string().c_str();
+     reconnectTime_ = static_cast<unsigned int>(config.get_object()["remote"].get_object()["reconnect"].as_int64());
      udsFile_ = config.as_object() ["UDS"].as_object() ["file"].as_string().c_str();
-     enableQueue_ = config.as_object() ["UDS"].as_object() ["queue"].as_bool();
+     queueEnabled_ = config.as_object() ["UDS"].as_object() ["queue"].as_bool();
 
      ctx_.use_certificate_file ( qlCert_, ssl::context::file_format::pem );
      ctx_.use_private_key_file ( qlKey_, ssl::context::file_format::pem );

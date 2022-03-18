@@ -18,7 +18,7 @@ Log logger;
 static string confFile;
 json::value config = {
      {
-          "client", {
+          "remote", {
                { "host", "api.quicklist.tech"},
                { "port", 5000 },
                { "reconnect", 2 }
@@ -196,9 +196,9 @@ int main ( int argc, char** argv )
      confFile = argv[2];
      configure();
 
-     json::value client = config.as_object() ["client"];
-     json::value cert = client.get_object() ["certificate"];
-     json::value pKey = client.get_object() ["privatekey"];
+     json::value remote = config.as_object() ["remote"];
+     json::value cert = remote.get_object() ["certificate"];
+     json::value pKey = remote.get_object() ["privatekey"];
 
      if ( cert == nullptr || pKey == nullptr ) {
           std::cerr << "client.certificate or client.privatekey is missing" << std::endl;

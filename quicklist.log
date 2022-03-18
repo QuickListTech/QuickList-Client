@@ -18,3 +18,247 @@ INFO: Starting QuickList-Client daemon.
 INFO: Starting QuickList-Client daemon.
 WARN: Removing stale sock file
 INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+WARN: Removing stale sock file
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+WARN: Removing stale sock file
+INFO: QuickList server connected: 192.168.1.242:8080
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: Starting QuickList-Client daemon.
+ERR: WS/onConnect: Network is unreachable
+ERR: WS/onConnect: Network is unreachable
+ERR: WS/onConnect: Network is unreachable
+ERR: WS/onConnect: Network is unreachable
+ERR: WS/onConnect: Network is unreachable
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Starting QuickList-Client daemon.
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+ERR: WS/onRead: stream truncated
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+INFO: QuickList server connected: 192.168.1.242:8080
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+INFO: QuickList server connection closed
+ERR: WS/onRead: Operation canceled
+INFO: QuickList server connected: 192.168.1.242:8080
+ERR: WS/onRead: stream truncated
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file
+ERR: WS/onConnect: Connection refused
+INFO: Starting QuickList-Client daemon.
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+ERR: WS/onConnect: Connection refused
+INFO: Unix Domain Socket closed
+ERR: UDSession/onRead: End of file

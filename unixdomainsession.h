@@ -14,7 +14,12 @@ class QuicklistClient;
 class WebsocketSession;
 
 /**
- * @todo write docs
+ * UnixDomainSession is created for every connection. It establishes 1-to-1 WebsocketSession connection.
+ * If WebsocketSession goes down, it queues all messages and returns "QUEUE" signal to client.
+ *
+ * An internal timer then checks when connection is back up and sends all queued messages.
+ *
+ * It responds to basic STATUS messages to tell client if WebsocketSession is UP or DOWN
  */
 class UnixDomainSession : public std::enable_shared_from_this<UnixDomainSession>
 {
@@ -27,19 +32,29 @@ public:
         return socket_;
     }
 
+    /*
+     * Start async chain
+     */
     void run();
-    void onRead ( const boost::system::error_code& ec, size_t bytes_transferred );
-    void onWrite ( const boost::system::error_code& ec );
+
+    /*
+     * Incoming messages from QuickList should call this to deliver responses to client
+     */
     void receive(std::string const &);
 private:
+  void onRead ( const boost::system::error_code& ec, size_t bytes_transferred );
+  void onWrite ( const boost::system::error_code& ec );
+  void closeSocket();
+
   net::local::stream_protocol::socket socket_;
   QuicklistClient *client_;
   std::queue<std::string> inQueue_;
   std::queue<std::string> outQueue_;
 
-  typedef boost::array<char, 1024> SingleBuffer;
-  SingleBuffer data_;
-  std::vector<SingleBuffer> buffers_;
+  //typedef boost::array<char, 4> SingleBuffer;
+  //SingleBuffer data_;
+  //std::vector<SingleBuffer> buffers_;
+  net::streambuf data_;
   net::deadline_timer outQueueTimer_;
   std::weak_ptr<WebsocketSession> ws_;
 
@@ -47,6 +62,7 @@ private:
   void fallback(std::string const &msg);
   void startOutQueueTimer();
   void onOutQueueTimer(boost::system::error_code const &);
+  std::string bufferToString() const;
 
 };
 

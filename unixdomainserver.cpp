@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "unixdomainserver.h"
+#include "unixdomainsession.h"
 #include "websocketsession.h"
 #include "log.h"
 #include <iostream>
@@ -26,6 +27,7 @@ void UnixDomainServer::onAccept ( Session sp, boost::system::error_code const & 
           fail ( ec, "UDServer/onAccept: ");
           return;
      }
+
      sp.reset ( new UnixDomainSession ( ioc_, client_ ) );
      acceptor_.async_accept ( sp->socket(),
                               std::bind ( &UnixDomainServer::onAccept, this, sp, _1 ) );
