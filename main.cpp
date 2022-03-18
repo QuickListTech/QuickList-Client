@@ -92,7 +92,7 @@ void reload(int sig)
      logger.warn() << "SIGNAL(" << sig << ") received. Reloading QuickList-Client daemon..." << std::endl;
 }
 
-void skeleton_daemon()
+void daemonize()
 {
      json::value server = config.as_object()["UDS"];
      string pidFile = server.as_object()[ "pidfile" ].as_string().c_str();
@@ -212,7 +212,7 @@ int main ( int argc, char** argv )
 
      if (server.as_object()["daemonize"].as_bool())
      {
-          skeleton_daemon();
+          daemonize();
      }
 
      string logFile = server.as_object()["log"].as_string().c_str();
