@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2022 <copyright holder> <email>
+// SPDX-FileCopyrightText: 2022 Petr Janda admin@quicklist.tech
 // SPDX-License-Identifier: Apache-2.0
 
 #ifndef LOG_H
@@ -9,7 +9,10 @@
 #include <iostream>
 
 /**
- * @todo write docs
+ * Simple logging facility outputs to both file and cout.
+ * It implements basic stream operator<< and std::endl
+ * Supports a number of logging levels and is thread safe
+ * Exposes the "logger" variable globally via an extern
  */
 class Log
 {

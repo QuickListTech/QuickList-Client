@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Petr Janda admin@quicklist.tech
+// SPDX-License-Identifier: Apache-2.0
+
 #include <cstdlib>
 #include <functional>
 #include <iostream>

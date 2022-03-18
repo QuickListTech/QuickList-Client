@@ -1,4 +1,4 @@
-    // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
+// SPDX-FileCopyrightText: 2022 Petr Janda admin@quicklist.tech
 // SPDX-License-Identifier: Apache-2.0
 
 #ifndef WEBSOCKETSESSION_H
