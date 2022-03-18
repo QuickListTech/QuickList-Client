@@ -58,6 +58,8 @@ private:
     std::ofstream out_;
     std::mutex mtx_;
     std::string file_;
+
+    std::string timeStr() const;
 };
 
 extern Log logger;

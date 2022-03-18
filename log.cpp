@@ -3,6 +3,8 @@
 
 #include "log.h"
 
+using std::string;
+
 Log::Log()
 {
 }
@@ -40,24 +42,34 @@ Log& Log::operator<< ( StandardEndLine manip )
 
 Log& Log::warn()
 {
-    *this << "WARN: ";
+    *this << timeStr() << " WARN: ";
     return *this;
 }
 
 Log& Log::info()
 {
-    *this << "INFO: ";
-    return *this;
+     *this << timeStr() << " INFO: ";
+     return *this;
 }
 
 Log& Log::debug()
 {
-    *this << "DEBUG: ";
-    return *this;
+     *this << timeStr() << " DEBUG: ";
+     return *this;
 }
 
 Log& Log::err()
 {
-    *this << "ERR: ";
-    return *this;
+     *this << timeStr() << " ERR: ";
+     return *this;
+}
+
+string Log::timeStr() const
+{
+    char tt[100];
+    time_t now = time(nullptr);
+    auto tm_info = localtime(&now);
+
+    int sz = strftime(tt, 100, "%Y-%m-%d %H:%M:%S", tm_info);
+    return string(tt, sz);
 }
