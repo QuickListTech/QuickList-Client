@@ -8,12 +8,14 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 set(TARGET quicklist-client)
 
 find_package(Threads REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost COMPONENTS log json REQUIRED)
 
 find_library(CRYPTO NAMES crypto SHARED)
 find_library(SSL NAMES ssl SHARED)
 
 add_compile_options(-Wall -Wextra -pedantic)
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+
 
 file (GLOB APP_FILES
     main.cpp

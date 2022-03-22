@@ -35,7 +35,7 @@ QuicklistClient::QuicklistClient() : ctx_ ( ssl::context::tlsv12_client )
 void QuicklistClient::run()
 {
      if (std::filesystem::exists(udsFile_)) {
-          logger.warn() << "Removing stale sock file" << std::endl;
+          BOOST_LOG_TRIVIAL(info) << "Removing stale sock file" << std::endl;
           UnixDomainServer::removeSockFile(udsFile_);
      }
 

@@ -144,7 +144,7 @@ UnixDomainSession::~UnixDomainSession()
 void UnixDomainSession::closeSocket()
 {
      socket_.close();
-     logger.info() << "Unix Domain Socket closed" << std::endl;
+     BOOST_LOG_TRIVIAL(info) << "Unix Domain Socket closed";
 }
 
 string UnixDomainSession::bufferToString() const

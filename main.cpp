@@ -17,7 +17,6 @@ using std::ifstream;
 using std::ofstream;
 using std::getline;
 
-Log logger;
 static string confFile;
 json::value config = {
      {
@@ -35,7 +34,8 @@ json::value config = {
                { "daemonize" , false },
                { "rundir" , "/"},
                { "pidfile", "/var/run/quicklist-client.pid"},
-               { "log", "quicklist.log"}
+               { "log", "quicklist.log"},
+               { "loglevel", "info" }
           }
      }
 };
@@ -84,12 +84,11 @@ void configure()
 
 void reload(int sig)
 {
-     logger.close();
-     logger.open();
-
      configure();
+     logInit(config.as_object()["UDS"].as_object()["log"].as_string().c_str(),
+             config.as_object()["UDS"].as_object()["loglevel"].as_string().c_str());
 
-     logger.warn() << "SIGNAL(" << sig << ") received. Reloading QuickList-Client daemon..." << std::endl;
+     BOOST_LOG_TRIVIAL(warning) << "SIGNAL(" << sig << ") received. Reloading QuickList-Client daemon...";
 }
 
 void daemonize()
@@ -215,12 +214,10 @@ int main ( int argc, char** argv )
           daemonize();
      }
 
-     string logFile = server.as_object()["log"].as_string().c_str();
+     logInit(server.as_object()["log"].as_string().c_str(),
+             server.as_object()["loglevel"].as_string().c_str());
 
-     logger.file(logFile);
-     logger.open();
-
-     logger.info() << "Starting QuickList-Client daemon." << std::endl;
+     BOOST_LOG_TRIVIAL(warning) << "Starting QuickList-Client daemon.";
 
      QuicklistClient qlc;
 

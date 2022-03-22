@@ -1,88 +1,55 @@
 // SPDX-FileCopyrightText: 2022 <copyright holder> <email>
 // SPDX-License-Identifier: Apache-2.0
 
+#include <boost/log/expressions.hpp>
+#include <boost/log/sinks/text_ostream_backend.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/core/null_deleter.hpp>
+
 #include "log.h"
+#include <fstream>
 
 using std::string;
 
-Log::Log() : line_(), sline_(line_), scout_(std::cout)
+namespace logging = boost::log;
+namespace src = boost::log::sources;
+namespace sinks = boost::log::sinks;
+namespace keywords = boost::log::keywords;
+namespace expr = boost::log::expressions;
+using namespace boost::log::trivial;
+
+void logInit(string const & logFilePath, string const &logLevel)
 {
+    logging::core::get()->remove_all_sinks();
+
+    typedef sinks::synchronous_sink< sinks::text_ostream_backend > TextSink;
+    auto sink = boost::make_shared< TextSink >();
+
+    auto fileStream = boost::make_shared< std::ofstream >(logFilePath, std::ios::app);
+    sink->locked_backend()->add_stream(fileStream);
+
+    boost::shared_ptr< std::ostream > cLogStream(&std::clog, boost::null_deleter());
+    sink->locked_backend()->add_stream(cLogStream);
+
+    sink->locked_backend()->auto_flush(true);
+
+    sink->set_formatter
+    (
+        expr::stream
+            << "[" << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S,%f") << "]"
+            << " <" << logging::trivial::severity << ">\t"
+            << expr::smessage
+    );
+    logging::core::get()->add_sink(sink);
+    std::istringstream sevLevel(logLevel);
+
+    severity_level sevLevel2;
+    sevLevel >> sevLevel2;
+
+    sink->set_filter(severity >= sevLevel2);
+
+    logging::add_common_attributes();
 
 }
-
-Log::~Log()
-{
-     close();
-}
-
-void Log::open()
-{
-     if ( file_ != "" ) {
-          fout_.open ( file_, std::ios::out|std::ios::app );
-
-          if ( !fout_ ) {
-               std::cerr << "Unable to open file " << file_ << std::endl;
-          }
-     }
-}
-
-void Log::close()
-{
-     fout_.close();
-}
-
-Log& Log::operator<< ( StandardEndLine manip )
-{
-     manip ( sline_ );
-     manip ( scout_ );
-
-     sline_.emit();
-     scout_.emit();
-
-     {
-          std::lock_guard<std::mutex> lock ( mtx_ );
-
-          if (fout_.is_open()) {
-               fout_ << line_.str();
-          }
-
-          line_.str("");
-     }
-
-     return *this;
-}
-
-Log& Log::warn()
-{
-    *this << timeStr() << " WARN: ";
-    return *this;
-}
-
-Log& Log::info()
-{
-     *this << timeStr() << " INFO: ";
-     return *this;
-}
-
-Log& Log::debug()
-{
-     *this << timeStr() << " DEBUG: ";
-     return *this;
-}
-
-Log& Log::err()
-{
-     *this << timeStr() << " ERR: ";
-     return *this;
-}
-
-string Log::timeStr() const
-{
-    char tt[100];
-    time_t now = time(nullptr);
-    auto tm_info = localtime(&now);
-
-    int sz = strftime(tt, 100, "%Y-%m-%d %H:%M:%S", tm_info);
-    return string(tt, sz);
-}
-

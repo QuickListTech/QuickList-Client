@@ -94,7 +94,7 @@ void WebsocketSession::onHandshake ( beast::error_code ec )
           return fail ( ec, "WS/onHandshake" );
 
      } else {
-          logger.info() << "QuickList server connected: " << client_->remoteHost() << ":" << client_->remotePort() << std::endl;
+          BOOST_LOG_TRIVIAL(warning) << "QuickList server connected: " << client_->remoteHost() << ":" << client_->remotePort();
      }
 
      // Read a message
@@ -170,7 +170,7 @@ void WebsocketSession::onClose(beast::error_code ec)
           return fail ( ec, "WS/onClose" );
      }
 
-     logger.info() << "QuickList server connection closed" << std::endl;
+     BOOST_LOG_TRIVIAL(info) << "QuickList server connection closed";
 }
 
 WebsocketSession::~WebsocketSession()
