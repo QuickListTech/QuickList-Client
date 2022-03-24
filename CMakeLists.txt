@@ -8,7 +8,7 @@ set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 set(TARGET quicklist-client)
 
 find_package(Threads REQUIRED)
-find_package(Boost COMPONENTS log json REQUIRED)
+find_package(Boost 1.78.0 COMPONENTS log json REQUIRED)
 
 find_library(CRYPTO NAMES crypto SHARED)
 find_library(SSL NAMES ssl SHARED)
