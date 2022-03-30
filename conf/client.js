@@ -11,6 +11,7 @@
         "rundir" : "./",
         "pidfile" : "quicklist.pid",
         "user" : "petr",
-        "group" : "petr"
+        "group" : "petr",
+	"loglevel" : "debug"
     }
 }

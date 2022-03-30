@@ -36,6 +36,8 @@ void UnixDomainSession::onRead ( boost::system::error_code const & ec, size_t by
           return fail ( ec, "UDSession/onRead" );
      }
 
+     BOOST_LOG_TRIVIAL(debug) << "UDS/onRead: message read";
+
      /*
       * Read buffer
       */
@@ -46,7 +48,7 @@ void UnixDomainSession::onRead ( boost::system::error_code const & ec, size_t by
      data_.consume(bytes_transferred);
 
      // Respond to basic STATUS requests
-     if ( payload == "STATUS\n" ) {
+     if ( payload == "STATUS" ) {
           if ( sp && sp->isOpen() ) {
                receive ( "UP" );
           } else {
@@ -151,7 +153,7 @@ string UnixDomainSession::bufferToString() const
 {
      using boost::asio::buffers_begin;
 
-     string result ( buffers_begin ( data_.data() ), buffers_begin ( data_.data() ) + data_.size() );
+     string result ( buffers_begin ( data_.data() ), buffers_begin ( data_.data() ) + data_.size() - 1 );
 
      return result;
 }
