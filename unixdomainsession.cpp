@@ -15,7 +15,7 @@ using std::ostringstream;
 using namespace boost::posix_time;
 
 UnixDomainSession::UnixDomainSession ( net::io_context& ioc, QuicklistClient *p )
-     : socket_ ( ioc ), client_ ( p ), outQueueTimer_ ( ioc )
+     : socket_ ( ioc ), client_ ( p ), outQueueTimer_ ( ioc ), delimiter_("\n")
 {
 }
 
@@ -24,7 +24,7 @@ void UnixDomainSession::run()
      startOutQueueTimer();
      ws_ = client_->createWebsocketSession ( weak_from_this() );
 
-     net::async_read_until ( socket_, data_, '\n',
+     net::async_read_until ( socket_, data_, delimiter_,
                              std::bind ( &UnixDomainSession::onRead, shared_from_this(),_1, _2 ) );
 }
 
@@ -42,7 +42,9 @@ void UnixDomainSession::onRead ( boost::system::error_code const & ec, size_t by
       * Read buffer
       */
      auto sp = ws_.lock();
-     string payload = bufferToString();
+     string payload = bufferToString(bytes_transferred);
+     BOOST_LOG_TRIVIAL(trace) << payload;
+
 
      // Empty buffer
      data_.consume(bytes_transferred);
@@ -149,11 +151,9 @@ void UnixDomainSession::closeSocket()
      BOOST_LOG_TRIVIAL(info) << "Unix Domain Socket closed";
 }
 
-string UnixDomainSession::bufferToString() const
+string UnixDomainSession::bufferToString(size_t bytes_transferred) const
 {
      using boost::asio::buffers_begin;
 
-     string result ( buffers_begin ( data_.data() ), buffers_begin ( data_.data() ) + data_.size() - 1 );
-
-     return result;
+     return string( buffers_begin ( data_.data() ), buffers_begin ( data_.data() ) + bytes_transferred - delimiter_.size() );
 }

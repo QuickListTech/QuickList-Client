@@ -12,6 +12,6 @@
         "pidfile" : "quicklist.pid",
         "user" : "petr",
         "group" : "petr",
-	"loglevel" : "debug"
+	"loglevel" : "info"
     }
 }

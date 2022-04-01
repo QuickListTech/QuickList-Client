@@ -57,12 +57,13 @@ private:
   net::streambuf data_;
   net::deadline_timer outQueueTimer_;
   std::weak_ptr<WebsocketSession> ws_;
+  std::string delimiter_;
 
   void onReceive(std::string const &msg);
   void fallback(std::string const &msg);
   void startOutQueueTimer();
   void onOutQueueTimer(boost::system::error_code const &);
-  std::string bufferToString() const;
+  std::string bufferToString(size_t bytes_transferred) const;
 
 };
 
