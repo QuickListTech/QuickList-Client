@@ -6,7 +6,7 @@
 #include "unixdomainserver.h"
 #include "log.h"
 #include <fstream>
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include <boost/asio/signal_set.hpp>
 
 using std::ostringstream;
@@ -34,7 +34,7 @@ QuicklistClient::QuicklistClient() : ctx_ ( ssl::context::tlsv12_client )
 
 void QuicklistClient::run()
 {
-     if (std::filesystem::exists(udsFile_)) {
+     if (boost::filesystem::exists(udsFile_)) {
           BOOST_LOG_TRIVIAL(info) << "Removing stale sock file" << std::endl;
           UnixDomainServer::removeSockFile(udsFile_);
      }
