@@ -49,20 +49,11 @@ void UnixDomainSession::onRead ( boost::system::error_code const & ec, size_t by
      // Empty buffer
      data_.consume(bytes_transferred);
 
-     // Respond to basic STATUS requests
-     if ( payload == "STATUS" ) {
-          if ( sp && sp->isOpen() ) {
-               receive ( "UP" );
-          } else {
-               receive ( "DOWN" );
-          }
+     if ( sp  && sp->isOpen() ) {
+          sp->send ( std::make_shared<string> ( payload ) );
      } else {
-          if ( sp  && sp->isOpen() ) {
-               sp->send ( std::make_shared<string> ( payload ) );
-          } else {
-               // Queue message
-               fallback ( payload );
-          }
+          // Queue message
+          fallback ( payload );
      }
 
      net::async_read_until ( socket_, data_, '\n',

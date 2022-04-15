@@ -22,6 +22,10 @@ ioc_(ioc), ctx_(ctx), resolver_ ( ioc ),  rTimer_(ioc), client_(cp), uds_(uds)
 
 void WebsocketSession::reconnectTimer()
 {
+     if (auto sp = uds_.lock()) {
+          sp->receive("DOWN");
+     }
+
      rTimer_.expires_from_now ( seconds ( client_->reconnectTime() ) );
      rTimer_.async_wait (std::bind ( &WebsocketSession::connect, shared_from_this() ) );
 }
@@ -95,6 +99,10 @@ void WebsocketSession::onHandshake ( beast::error_code ec )
 
      } else {
           BOOST_LOG_TRIVIAL(warning) << "QuickList server connected: " << client_->remoteHost() << ":" << client_->remotePort();
+
+          if (auto sp = uds_.lock()) {
+               sp->receive("UP");
+          }
      }
 
      // Read a message
