@@ -29,7 +29,7 @@ QuicklistClient::QuicklistClient() : ctx_ ( ssl::context::tlsv12_client )
 
      // This holds the root certificate used for verification
      ctx_.set_verify_mode ( ssl::verify_peer | ssl::verify_fail_if_no_peer_cert );
-     ctx_.add_verify_path ( "/etc/ssl/certs" );
+     ctx_.set_default_verify_paths();
 }
 
 void QuicklistClient::run()

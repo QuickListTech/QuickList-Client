@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 project(quicklist-client)
 
-set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_THREAD_PREFER_PTHREAD true)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 set(TARGET quicklist-client)

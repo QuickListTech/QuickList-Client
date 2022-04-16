@@ -5,7 +5,6 @@
 #include <functional>
 #include <iostream>
 #include <fstream>
-#include <boost/json/src.hpp>
 #include "quicklistclient.h"
 #include <pwd.h>
 #include <grp.h>
