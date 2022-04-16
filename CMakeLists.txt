@@ -15,6 +15,7 @@ find_library(SSL NAMES ssl SHARED)
 add_compile_options(-Wall -Wextra -pedantic)
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 
+include_directories(/usr/local/include)
 
 file (GLOB APP_FILES
     main.cpp
